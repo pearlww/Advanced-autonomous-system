@@ -6,6 +6,14 @@ Exercises and projects in the corresponding DTU course
 
 In subdirectory 'sim', run the command.
 
-Simulator: simserver1 simconfig388.xml
-Robot controller(MRC): mrc -s8000 -t1
-MRC client (telnet): telnet localhost 31001
+Simulator: 
+simserver1 simconfig388.xml
+
+Laser server: 
+ulmsserver
+
+Robot controller(MRC): 
+mrc -s8000 -t1
+
+Monitoring client: 
+qclient -style a
