@@ -1,0 +1,22 @@
+%read the gm
+followline "br" @v 0.3: ($irdistfrontmiddle < 0.45)
+
+
+garage=$fiducialid
+
+nrlines = garage
+
+%go back 
+fwd -1
+
+%park at the right spot
+label "start"
+eval nrlines
+followline "bl" @v 0.3: ($crossingblackline)
+fwd 0.1
+nrlines=nrlines-1
+if(nrlines>0) "start"
+
+
+turn 90 
+fwd 0.2

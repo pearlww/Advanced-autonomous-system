@@ -1,0 +1,8 @@
+fwd 0.75 @v 0.3
+% square program2
+n=4
+label "start"
+fwd 0.3 @v 0.3
+turnr 0.3 90 
+n=n-1
+if(n>0) "start"

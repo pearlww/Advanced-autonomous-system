@@ -1,0 +1,14 @@
+followline "br" @v 0.3: ($irdistfrontmiddle < 0.45)
+
+garage=$fiducialid
+eval garage
+switch (garage)
+case 1
+	turn 90
+	fwd 0.2
+	eval garage
+case 2
+	turn -90
+	fwd 0.2
+	eval garage
+endswitch
