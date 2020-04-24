@@ -25,7 +25,7 @@ function [ matchResult ] = match( pose, poseCov, worldLines, laserLines )
     global varAlpha varR
     
     noOfLaserLines=size(laserLines,2);
-    noOfWorldLines=size(laserLines,2);
+    noOfWorldLines=size(worldLines,2);
     g=2;
     covObs = diag([varAlpha varR]);
     matchResult=zeros(5,noOfWorldLines);
