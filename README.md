@@ -1,17 +1,17 @@
 # Advanced-autonomous-system
-Exercises and projects in the corresponding DTU course
+Exercises and the finnal project of the corresponding DTU course 31388 Advanced autonomous system
 
+Exercise
+ex1: Introduction
+ex2: Laser 
+ex3: Kinematics
+ex4: Motion control
+ex5 : Vison
+ex8-ex11: Extended kalman locaization
+ex12-ex13: Path planner
 
-./go 17   password is smr4ever
-
-In subdirectory 'sim', run the command.
-
-
-Simulator: simserver1 simconfig388.xml
-
-Laser server: ulmsserver
-
-Robot controller(MRC): mrc -s8000 -t1
-
-Monitoring client: qclient -style a
-
+Finnal Project
+Simulation of the an autonomous system to complete following tasks:
+1. Running though all the given guidemarks.
+2. Find an object and identify its shape and pose(position+orientation)
+3. Return the start point.
