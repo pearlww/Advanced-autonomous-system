@@ -19,54 +19,41 @@ global lsrRelPose % The laser scanner pose in the robot frame is read globally
 % z=H*x
 % z=[alpha2;rho2]
 % x=[x,y,theta]=poseIn
+%% method 1
+% % The laser scanner pose in the world frame
+% theta=poseIn(3); 
+% R=[cos(theta),-sin(theta),0;
+%     sin(theta),cos(theta),0;
+%     0,0,1];
+% t=poseIn;
+% laser_w = R*lsrRelPose'+t;
+% 
+% % the line in world frame to laser frame
+% alpha2=worldLine(1)-laser_w(3);
+% rho2=worldLine(2)-laser_w(1)*cos(worldLine(1))-laser_w(2)*sin(worldLine(1));
 
-% The laser scanner pose in the world frame
-theta=poseIn(3); 
-R=[cos(theta),-sin(theta),0;
-    sin(theta),cos(theta),0;
-    0,0,1];
-t=poseIn;
-laser_w = R*lsrRelPose'+t;
-
-% the line in world frame to laser frame
-alpha2=worldLine(1)-theta;
-rho2=worldLine(2)-laser_w(1)*cos(worldLine(1))-laser_w(2)*sin(worldLine(1));
-
-% thansfer the domain to -pi~pi
-if alpha2>pi
-    alpha2=alpha2-2*pi;
-elseif alpha2<-pi
-    alpha2=alpha2+2*pi;
-end
-    
+%% method 2
+alpha2=worldLine(1)-poseIn(3)-lsrRelPose(3);
+rho2=worldLine(2)...
+     -poseIn(1)*cos(worldLine(1)) - poseIn(2)*sin(worldLine(1))...
+     -lsrRelPose(1)*cos(worldLine(1)-poseIn(3)) - lsrRelPose(2)*sin(worldLine(1)-poseIn(3));   
 %% why this is not correct?
-% % the line pose in the laser frame
+% % the line in world frame to laser frame
 % [x,y]=pol2cart(worldLine(1),worldLine(2));
 % theta=laser_w(3); 
 % R=[cos(theta),-sin(theta);sin(theta),cos(theta)]';
 % t=-laser_w(1:2);   
 % line_l_cart=R*[x,y]'+t;
 
-%% another method
-% [x,y]=pol2cart(worldLine(1),worldLine(2));
-% theta=poseIn(3); 
-% R=[cos(theta),-sin(theta);sin(theta),cos(theta)]';
-% t=-poseIn(1:2);   
-% line_r_cart=R*[x,y]'+t;
-% 
-% theta=lsrRelPose(3); 
-% R=[cos(theta),-sin(theta);sin(theta),cos(theta)]';
-% t=-lsrRelPose(1:2);   
-% line_l_cart=R*line_r_cart+t;
+%%
+% thansfer the domain to -pi~pi
+if alpha2>pi
+    alpha2=alpha2-2*pi;
+elseif alpha2<-pi
+    alpha2=alpha2+2*pi;
+end
 
-
-% [alpha,rho]=cart2pol(line_l_cart(1),line_l_cart(2));
-% alpha2=worldLine(1)-theta;
-% rho2=rho*cos(alpha-alpha2);
- projectedLine = [alpha2;rho2];
-
-
-%lineCov = zeros(2,2);
+projectedLine = [alpha2;rho2];
 [linecov,~] = lineCov(worldLine,poseIn,covIn);
 
 end

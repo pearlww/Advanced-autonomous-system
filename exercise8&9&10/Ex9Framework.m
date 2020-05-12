@@ -114,7 +114,7 @@ for iter = 1:noOfIter
         end
         
         axis([-pi,pi,0,squareWidth]);
-        title('the predicted and the extracted lines in the line parameter space')
+%         title('the predicted and the extracted lines in the line parameter space')
         xlabel('alpha')
         ylabel('r(m)')
         hold off
@@ -126,6 +126,7 @@ for iter = 1:noOfIter
         if(plotMatchedLines)
             colors = 'brkm';
             figure(2)
+            
             clf reset
             subplot(121)
             hold on
@@ -135,7 +136,7 @@ for iter = 1:noOfIter
                 handles(1) = plotLine(projLine,colors(matchIndex),'--');
                 handles(2) = plotLine(laserLines(:,matchResult(5,matchIndex)),colors(matchIndex));            
             end
-            title('The predicted and the extracted lines with matched colors, ')
+%             title('The predicted and the extracted lines with matched colors, ')
             xlabel('x(m)');
             ylabel('y(m)');
             axis([0 2 -2 2]);
@@ -150,7 +151,7 @@ for iter = 1:noOfIter
                 set(h,'color',colors(matchIndex));
                 handles(2) =h;
                 plot(laserLines(1,matchResult(5,matchIndex)),laserLines(2,matchResult(5,matchIndex)),[colors(matchIndex) 'x']);
-                [projLine lineCov]=projectToLaser(matchResult(1:2,matchIndex),pose,poseCov);
+                [projLine,lineCov]=projectToLaser(matchResult(1:2,matchIndex),pose,poseCov);
                 plot(projLine(1),projLine(2),[colors(matchIndex) 'o']);
                 h = plot_gaussian_ellipsoid(projLine,lineCov);
                 set(h,'color',colors(matchIndex),'linestyle','--');
@@ -158,7 +159,7 @@ for iter = 1:noOfIter
                 legend(handles, 'Predicted lines','Measured lines');
             end
             axis([-pi,pi,0,squareWidth]);
-            title('the predicted and the extracted lines in the line parameter space')
+%             title('the predicted and the extracted lines in the line parameter space')
             xlabel('alpha')
             ylabel('r(m)')
             hold off

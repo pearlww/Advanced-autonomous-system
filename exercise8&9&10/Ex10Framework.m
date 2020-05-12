@@ -39,12 +39,13 @@ poseCovs = cell(1,noOfIter+1);
 realPoses = zeros(3,noOfIter+1);
 odoPoses = zeros(3,noOfIter+1);
 
-N=3;
 targetPoses=[0.5,0.5,pi;
              -0.5,0.5,-pi/2;
              -0.5,-0.5,0;
              0.5,-0.5,pi/2];
 noOfTargets=size(targetPoses,1); 
+% run for 20 times box driving
+N = noOfTargets * 20;
 
 for iter = 1:noOfIter+1
     
@@ -84,7 +85,7 @@ for iter = 1:noOfIter+1
     title('Pure odometry')
     pause(0.01)
     
-    if(iter == noOfIter+1)
+    if(iter == N+1)
         break
     end
 

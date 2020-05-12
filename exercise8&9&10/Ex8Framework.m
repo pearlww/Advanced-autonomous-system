@@ -1,4 +1,5 @@
 clear all
+close all
 
 addpath([pwd filesep 'extras'])
 addpath([pwd filesep 'yourScripts'])
