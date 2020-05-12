@@ -1,0 +1,70 @@
+laser "odopose log = true"
+log $odox $odoy $odoth
+array"Xs"3
+array"Ys"3
+array"thetas"3
+% X coordinates
+Xs[0] = 0.5
+Xs[1] = 0.5
+Xs[2] = 0.5
+
+
+% Y coordinates
+Ys[0] = 0.5
+Ys[1] = -0.5
+Ys[2] = 0.5
+
+
+% theata, angles
+thetas[0] = 0
+thetas[1] = -90
+thetas[2] = -180
+
+
+% Parameters declaration
+Krho = 0.3
+Kalpha = 0.8
+Kbeta = -0.35
+n = 0
+Ts = 0.05
+label"start"
+k = 1000
+% Get current pose
+xtw = Xs[n]
+ytw = ys[n]
+thtw = thetas[n]*3.14/180
+label"loop"
+% Take current coordinates
+cx = $odox
+cy = $odoy
+cth = $odoth
+% Transformation
+invtrans(xtw, ytw, thtw, cx, cy, cth)
+Dx = -$res0
+Dy = -$res1
+theta = $res2
+% Compute some intermidiate variable values
+rho = sqrt(Dx*Dx + Dy*Dy)
+alpha = -theta + atan2(Dy,Dx)
+alpha = normalizeanglerad(alpha)
+beta = - theta - alpha
+beta = normalizeanglerad(beta)
+% Calculate speed under target frame
+v = Krho * rho
+if (alpha>-1.57&alpha>1.57)"skip"
+v = -v
+label "skip"
+w = Kalpha  * alpha + Kbeta * beta
+% Calculate wheel speeds, results are from matlab
+l  = 0.26 % measured
+wl = (2*v-w*l)/2
+wr = (2*v+w*l)/2
+motorcmds speedl speedr
+wait Ts
+k = k - 1
+if(k>0)"loop"
+% To go to the next point
+n = n + 1
+if(n<4)"start"
+
+stop

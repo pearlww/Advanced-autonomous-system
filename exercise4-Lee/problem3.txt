@@ -1,0 +1,46 @@
+laser "odopose log = true"
+log $odox $odoy $odoth
+array"Xs"5
+array"Ys"5
+array"thetas"5
+array"points"3
+% X coordinates
+Xs[0] = 0.5
+Xs[1] = 0.5
+Xs[2] = 0.5
+Xs[3] = 0
+Xs[4] = 0
+% Y coordinates
+Ys[0] = 0.5
+Ys[1] = 0.5
+Ys[2] = -0.5
+Ys[3] = 0.5
+Ys[4] = 0
+% theata, angles
+thetas[0] = -90
+thetas[1] = 0
+thetas[2] = -90
+thetas[3] = -180
+thetas[4] = 90
+% Label is a good tool for realizing flow control
+n = 0
+label"start"
+Dx = Xs[n] - $odox
+eval $odox
+eval $odoy
+eval $odoth
+Dy = Ys[n] - $odoy
+Angle = atan2(Dy,Dx)
+Dangle = Angle - $odoth
+turn Dangle "rad"
+dist = sqrt(Dx*Dx + Dy*Dy)
+fwd dist @v1
+wait 1
+Dtheta = thetas[n]/180*3.14 -$odoth
+eval Dtheta
+turn Dtheta "rad"
+wait 1
+n = n + 1
+if(n<5)"start"
+
+log"$odox""$odoy""$odoth""Angle""change"
