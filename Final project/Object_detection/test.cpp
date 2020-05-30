@@ -40,7 +40,7 @@ int main(void){
 	//}
 
 	/*----------------------------------- test3-------------------------------------------*/
-	ifstream myfile("laserData.txt");
+	ifstream myfile("laserData2.txt");
 	double x;
 	double y;
 	while ( myfile >> x >> y) {
@@ -53,7 +53,7 @@ int main(void){
 	}
 
 	/*--------------------------------------------------------------------------*/
-	Lines = od.ransac(X, Y, 100, 0.1);
+	Lines = od.ransac(X, Y, 100, 0.02);
 	od.objectPose(Lines);
 
 	system("pause");
