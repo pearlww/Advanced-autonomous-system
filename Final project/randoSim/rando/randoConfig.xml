@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<!--
+    Configuration file for 
+    Simulator Server
+-->
+
+<simserver>
+  <!-- *** Core Components Configuration *** -->
+  <!-- Sheduler configuration -->
+  <scheduler>
+    <period value="10000"/><!--in usec-->
+  </scheduler>
+  
+  <!-- Simulator configuration -->
+  <simstage>
+    <world wallmap="randoWalls" linemap="constLines" scale="150" yoff="775"/>
+      1<guidemark gmno="3" gmpose="0 1.5 pi"/>
+      2<guidemark gmno="7" gmpose="0 1.5 0"/>
+      3<guidemark gmno="10" gmpose="4 1.5 pi"/>
+      4<guidemark gmno="11" gmpose="4 1.5 0"/>
+      5<guidemark gmno="6" gmpose="0 3.5 pi"/>
+      6<guidemark gmno="4" gmpose="0 3.5 0"/>
+      7<guidemark gmno="1" gmpose="4 3.5 pi"/>
+      8<guidemark gmno="6" gmpose="4 3.5 0"/>
+      9<guidemark gmno="6" gmpose="0 4.7 0"/>
+      10<guidemark gmno="98" gmpose="4 4.7 pi"/>
+      11<guidemark gmno="2" gmpose="0.4 5 -pi/2"/>
+      12<guidemark gmno="6" gmpose="3.6 5 -pi/2"/>
+      13<guidemark gmno="6" gmpose="2 4.0 pi"/>
+      14<guidemark gmno="6" gmpose="2 4.0 0"/>
+  </simstage>
+  
+  <!-- Robot server no. 0 -->
+  <robot>
+    <mrcserver port="8000"/>
+    <clients number="5"/>
+    <params name="smr0" robotpose="0.25 0.25 0" wheelbase="0.26" encresolution="0.00010245"/>
+    <corner x="-0.1" y="-0.15"/>
+    <corner x="0.25" y="-0.15"/>
+    <corner x="0.25" y="0.15"/>
+    <corner x="-0.1" y="0.15"/>
+    <irsensor ka="16.0" kb="76.0"/>
+    <laserscanner port="19001" laserpose="0.26 0.0 0.0"/>
+  </robot>
+  
+</simserver>

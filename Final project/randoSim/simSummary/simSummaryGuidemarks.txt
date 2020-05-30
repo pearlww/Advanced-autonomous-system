@@ -1,0 +1,4 @@
+This simulation has randomly selected <8> guidemarks for use.
+We will follow guidemarks in the order: 6-->4-->11-->2-->7-->1-->3-->10
+The final guidemark, <10>, will have value 98, which points home.
+All unused guidemarks will have value <6>, pointing back to the first guidemark.

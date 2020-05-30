@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<!--
+    Configuration file for 
+    Simulator Server
+-->
+
+<simserver>
+  <!-- *** Core Components Configuration *** -->
+  <!-- Sheduler configuration -->
+  <scheduler>
+    <period value="10000"/><!--in usec-->
+  </scheduler>
+  
+  <!-- Simulator configuration -->
+  <simstage>
+    <world wallmap="randoWalls" linemap="constLines" scale="150" yoff="775"/>
+INSERTGUIDEMARKSHERE
+  </simstage>
+  
+  <!-- Robot server no. 0 -->
+  <robot>
+    <mrcserver port="8000"/>
+    <clients number="5"/>
+    <params name="smr0" robotpose="0.25 0.25 0" wheelbase="0.26" encresolution="0.00010245"/>
+    <corner x="-0.1" y="-0.15"/>
+    <corner x="0.25" y="-0.15"/>
+    <corner x="0.25" y="0.15"/>
+    <corner x="-0.1" y="0.15"/>
+    <irsensor ka="16.0" kb="76.0"/>
+    <laserscanner port="19001" laserpose="0.26 0.0 0.0"/>
+  </robot>
+  
+</simserver>

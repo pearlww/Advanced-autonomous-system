@@ -1,0 +1,70 @@
+server imagepath="./"
+server datapath="./"
+server replayPath="./log"
+
+#Setup server for port 20100+N where N is team nr.
+server port="24919"
+
+#Load basic modules
+module load="odoPose"
+module load="laserPool"
+module load="v360"
+
+# module load for odometry control and global variable access
+module load=var
+module load=mappose
+
+# live laser scanner on SMR
+#scanset devtype=urg devname="/dev/ttyACM0"
+#scanset def=urg
+#scanset mirror=true
+
+##Simulated scanner (port: 19100+N where N is team nr)
+scanset devType=sim devName=localhost:19001
+scanset def=sim
+
+#Set scanner position with respect of SMR center
+scanset x=0.255 z=0.04
+scanset width=180
+scanset mirror="true"
+scanset logOpen
+scanset log=used
+
+####################################################
+##  Load modules and enter setup commands below   ##
+####################################################
+module load="aupoly.so.0"
+module load="aulocalize.so.0"
+module load="auplan.so.0"
+module load="/home/smr/mobotware/aurs-plugins/myplugin/myplugin.so.0"
+
+####################################################
+##        load maze map into laser scanner        ##
+####################################################
+
+# For project
+addline startx=0.0	starty=0.0	endx=1.8	endy=0.0	name="bottom left"
+addline startx=2.2	starty=0.0	endx=4.0	endy=0.0	name="bottom right"
+addline startx=0.0	starty=5.0	endx=1.8	endy=5.0	name="top left"
+addline startx=2.2	starty=5.0	endx=4.0	endy=5.0	name="top right"
+addline startx=0.0	starty=0.0	endx=0.0	endy=1.8	name="left down"
+addline startx=0.0	starty=3.2	endx=0.0	endy=5.0	name="left up"
+addline startx=4.0	starty=0.0	endx=4.0	endy=1.8	name="right down"
+addline startx=4.0	starty=3.2	endx=4.0	endy=5.0	name="right up"
+addline startx=0.9	starty=3.1	endx=1.7	endy=3.1	name="maze bottom left"
+addline startx=2.3	starty=3.1	endx=3.1	endy=3.1	name="maze bottom right"
+addline startx=1.7	starty=2.5	endx=1.7	endy=3.1	name="maze left down"
+addline startx=0.9	starty=3.1	endx=0.9	endy=4.3	name="maze left up"
+addline startx=2.3	starty=2.5	endx=2.3	endy=3.1	name="maze right down"
+addline startx=3.1	starty=3.1	endx=3.1	endy=4.3	name="maze right up"
+addline startx=1.5	starty=3.7	endx=2.5	endy=3.7	name="maze middle horizontal"
+addline startx=2.0	starty=3.7	endx=2.0	endy=4.3	name="maze middle vertical"
+addline startx=0.9	starty=4.3	endx=3.1	endy=4.3	name="maze top"
+addline startx=2.086760516787392	starty=1.246922871050713	endx=2.2844374037521806	endy=1.2773177449591542name="object line 1"
+addline startx=2.2844374037521806	starty=1.2773177449591542	endx=2.238845092889519	endy=1.5738330754063377name="object line 2"
+addline startx=2.238845092889519	starty=1.5738330754063377	endx=2.0411682059247305	endy=1.5434382014978965name="object line 3"
+addline startx=2.0411682059247305	starty=1.5434382014978965	endx=2.086760516787392	endy=1.246922871050713name="object line 4"
+
+# pose initialization
+setinitpose x = 0.3 y = 0.3 th = 0
+setinitcov Cx = 0.1 Cy = 0.1 Cth = 0.1

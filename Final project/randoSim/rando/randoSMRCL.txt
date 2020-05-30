@@ -1,0 +1,450 @@
+% Set laser scanner states
+laser "resetplanner"
+laser "scanget"
+% Localizer iniatialization
+laser "setinitpose x=0.25 y=0.25 th=0"
+laser "setinitcov Cx=0.05 Cy=0.05 Cth=0.05"
+laser "push t='1' cmd='localize'"
+
+% Log data
+laser "scanset logopen"
+laser "scanset log = 1"
+laser "odopose log = true"
+
+% Set odometry info
+set "$odox" 0.25
+set "$odoy" 0.25
+set "$odoth" 0
+
+% Add nodes to laser scanner
+laser "addpoint pno=1 x=-0.5 y=-0.5"
+laser "addpoint pno=2 x=2 y=-0.5"
+laser "addpoint pno=3 x=4.5 y=-0.5"
+laser "addpoint pno=4 x=0.5 y=0.5"
+laser "addpoint pno=5 x=2 y=0.5"
+laser "addpoint pno=6 x=3.5 y=0.5"
+laser "addpoint pno=7 x=-0.5 y=1.5"
+laser "addpoint pno=8 x=0.5 y=1.5"
+laser "addpoint pno=9 x=3.5 y=1.5"
+laser "addpoint pno=10 x=4.5 y=1.5"
+laser "addpoint pno=11 x=-0.5 y=2.2"
+laser "addpoint pno=12 x=0.5 y=2.2"
+laser "addpoint pno=13 x=2 y=2.2"
+laser "addpoint pno=14 x=3.5 y=2.2"
+laser "addpoint pno=15 x=4.5 y=2.2"
+laser "addpoint pno=16 x=-0.5 y=3.4"
+laser "addpoint pno=17 x=0.5 y=3.4"
+laser "addpoint pno=18 x=1.2 y=3.4"
+laser "addpoint pno=19 x=2 y=3.4"
+laser "addpoint pno=20 x=2.7 y=3.4"
+laser "addpoint pno=21 x=3.5 y=3.4"
+laser "addpoint pno=22 x=4.5 y=3.4"
+laser "addpoint pno=23 x=1.2 y=4"
+laser "addpoint pno=24 x=2.7 y=4"
+laser "addpoint pno=25 x=-0.5 y=4.6"
+laser "addpoint pno=26 x=0.5 y=4.6"
+laser "addpoint pno=27 x=2 y=4.6"
+laser "addpoint pno=28 x=3.5 y=4.6"
+laser "addpoint pno=29 x=4.5 y=4.6"
+laser "addpoint pno=30 x=-0.5 y=5.5"
+laser "addpoint pno=31 x=0.3 y=5.5"
+laser "addpoint pno=32 x=2.0 y=5.5"
+laser "addpoint pno=33 x=3.7 y=5.5"
+laser "addpoint pno=34 x=4.5 y=5.5"
+laser "addpoint pno=35 x=1.7 y=4"
+laser "addpoint pno=36 x=2.2 y=4"
+
+% Set connections
+% Out-loop: counter-clockwise
+laser "addcon pno1=1 pno2=2"
+laser "addcon pno1=2 pno2=3"
+laser "addcon pno1=3 pno2=10"
+laser "addcon pno1=10 pno2=15"
+laser "addcon pno1=15 pno2=22"
+laser "addcon pno1=22 pno2=29"
+laser "addcon pno1=29 pno2=34"
+laser "addcon pno1=34 pno2=33"
+laser "addcon pno1=33 pno2=32"
+laser "addcon pno1=32 pno2=31"
+laser "addcon pno1=31 pno2=30"
+laser "addcon pno1=30 pno2=25"
+laser "addcon pno1=25 pno2=16"
+laser "addcon pno1=16 pno2=11"
+laser "addcon pno1=11 pno2=7"
+laser "addcon pno1=7 pno2=1"
+% Out-loop: clockwise
+laser "addcon pno1=1 pno2=7"
+laser "addcon pno1=7 pno2=11"
+laser "addcon pno1=11 pno2=16"
+laser "addcon pno1=16 pno2=25"
+laser "addcon pno1=25 pno2=30"
+laser "addcon pno1=30 pno2=31"
+laser "addcon pno1=31 pno2=32"
+laser "addcon pno1=32 pno2=33"
+laser "addcon pno1=33 pno2=34"
+laser "addcon pno1=34 pno2=29"
+laser "addcon pno1=29 pno2=22"
+laser "addcon pno1=22 pno2=15"
+laser "addcon pno1=15 pno2=10"
+laser "addcon pno1=10 pno2=3"
+laser "addcon pno1=3 pno2=2"
+laser "addcon pno1=2 pno2=1"
+% Connections between out-loop and inner-loop
+laser "addcon pno1=2 pno2=5"
+laser "addcon pno1=5 pno2=2"
+laser "addcon pno1=14 pno2=15"
+laser "addcon pno1=15 pno2=14"
+laser "addcon pno1=27 pno2=32"
+laser "addcon pno1=32 pno2=27"
+laser "addcon pno1=12 pno2=11"
+laser "addcon pno1=11 pno2=12"
+% Inner-loop: counter-clockwise
+laser "addcon pno1=4 pno2=5"
+laser "addcon pno1=5 pno2=6"
+laser "addcon pno1=6 pno2=9"
+laser "addcon pno1=9 pno2=14"
+laser "addcon pno1=14 pno2=21"
+laser "addcon pno1=21 pno2=28"
+laser "addcon pno1=28 pno2=27"
+laser "addcon pno1=27 pno2=26"
+laser "addcon pno1=26 pno2=17"
+laser "addcon pno1=17 pno2=12"
+laser "addcon pno1=12 pno2=8"
+laser "addcon pno1=8 pno2=4"
+% Inner-loop: clockwise
+laser "addcon pno1=4 pno2=8"
+laser "addcon pno1=8 pno2=12"
+laser "addcon pno1=12 pno2=17"
+laser "addcon pno1=17 pno2=26"
+laser "addcon pno1=26 pno2=27"
+laser "addcon pno1=27 pno2=28"
+laser "addcon pno1=28 pno2=21"
+laser "addcon pno1=21 pno2=14"
+laser "addcon pno1=14 pno2=9"
+laser "addcon pno1=9 pno2=6"
+laser "addcon pno1=6 pno2=5"
+laser "addcon pno1=5 pno2=4"
+% Connections between inner-loop and path in maze
+laser "addcon pno1=12 pno2=13"
+laser "addcon pno1=13 pno2=12"
+laser "addcon pno1=13 pno2=14"
+laser "addcon pno1=14 pno2=13"
+laser "addcon pno1=13 pno2=19"
+laser "addcon pno1=19 pno2=13"
+% In maze: counter-clockwise
+laser "addcon pno1=35 pno2=23"
+laser "addcon pno1=23 pno2=18"
+laser "addcon pno1=18 pno2=19"
+laser "addcon pno1=19 pno2=20"
+laser "addcon pno1=20 pno2=24"
+laser "addcon pno1=24 pno2=36"
+% In maze: clockwise
+laser "addcon pno1=36 pno2=24"
+laser "addcon pno1=24 pno2=20"
+laser "addcon pno1=20 pno2=19"
+laser "addcon pno1=19 pno2=18"
+laser "addcon pno1=18 pno2=23"
+laser "addcon pno1=23 pno2=35"
+
+% Calculate cost of navigating
+laser "calculatecost"
+pi=3.1416
+
+% Guidemark info
+array "gmx" 15
+array "gmy" 15
+array "gmth" 15
+% x-coordinates
+gmx[1]=0
+gmx[2]=0
+gmx[3]=4
+gmx[4]=4
+gmx[5]=0
+gmx[6]=0
+gmx[7]=4
+gmx[8]=4
+gmx[9]=0
+gmx[10]=4
+gmx[11]=0.4
+gmx[12]=3.6
+gmx[13]=2
+gmx[14]=2
+% y-coordinates
+gmy[1]=1.5
+gmy[2]=1.5
+gmy[3]=1.5
+gmy[4]=1.5
+gmy[5]=3.5
+gmy[6]=3.5
+gmy[7]=3.5
+gmy[8]=3.5
+gmy[9]=4.7
+gmy[10]=4.7
+gmy[11]=5
+gmy[12]=5
+gmy[13]=4.0
+gmy[14]=4.0
+% thetas
+gmth[1]=pi
+gmth[2]=0
+gmth[3]=pi
+gmth[4]=0
+gmth[5]=pi
+gmth[6]=0
+gmth[7]=pi
+gmth[8]=0
+gmth[9]=0
+gmth[10]=pi
+gmth[11]=-pi/2
+gmth[12]=-pi/2
+gmth[13]=pi
+gmth[14]=0
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% Mission 1 %%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% Mission 1: go through guidemarks until read number 98
+
+% First guidemark number to go to
+gmkno = 6
+
+% Navigate through guidemarks
+label"guidemarkTour"
+	% Want to go to guidemark 1
+
+	% Adding offset terms for better localization of destination point.
+	delx = (tgmth==0)*0.4 + (tgmth==pi)*-0.4 
+	dely = (tgmth==-pi/2)*-0.4
+
+	tgmx = tgmx + delx
+	tgmy = tgmy + dely
+
+	anglet = (tgmth==0)*pi + (tgmth==pi)*0 + (tgmth==-pi/2)*pi/2
+
+	% Get current location in world frame
+	call"getposeInWorld"
+
+	% Start planning
+	stringcat "findroute startx="xw "starty="yw "endx="tgmx "endy="tgmy
+	laser "$string"
+	wait 1
+	N = $l4
+	cost = $l5
+
+	% Drive to target guidemark
+	label"drive1"
+
+		% Take coordinates
+		stringcat "getpoint p="N
+		laser "$string"
+		x = $l5
+		y = $l6
+		th = $l7
+
+		% Navigate
+		drivew x y th "rad":($targetdist<0.25)
+		N = N - 1
+
+	if(N>=0)"drive1"
+
+	wait 1
+
+	call"getposeInWorld"
+
+	% Turn towards to guidemark
+	angle = anglet - thw
+	angle = normalizeanglerad(angle)
+
+	ignoreobstacles
+	turn angle "rad"
+	stop
+	wait 1
+
+	% Read new guidemark value
+	nextguidemark = $fiducialid
+	eval nextguidemark
+	stop
+
+	% If not read anything, continue to current goal position
+	if(nextguidemark == -1) "skip"
+	label"skip"
+
+stop
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% Mission 2 %%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% Mission 2: find the object on the loose
+
+% Idea: go around the area, stop at different points, turn to middle of region and finally do analysis
+array "ptxs" 10
+array "ptys" 10
+% node 13
+ptxs[1] = 2
+ptys[1] = 2.2
+% node 14
+ptxs[2] = 3.5
+ptys[2] = 2.2
+% node 9 
+ptxs[3] = 3.5
+ptys[3] = 1.5
+% node 6
+ptxs[4] = 3.5
+ptys[4] = 0.5
+% node 5
+ptxs[5] = 2
+ptys[5] = 0.5
+% node 4
+ptxs[6] = 0.5
+ptys[6] = 0.5
+% node 8
+ptxs[7] = 0.5
+ptys[7] = 1.5
+% node 12
+ptxs[8] = 0.5
+ptys[8] = 2.2
+% node 13
+ptxs[9] = 2
+ptys[9] = 2.2
+
+%Define indexes to determine how many points to go through
+array "indexs" 5
+indexs[1] = 2
+indexs[2] = 4
+indexs[3] = 6
+indexs[4] = 8
+
+% Define center of area
+xmid = 2
+ymid = 1.5
+num = 1
+
+% Clearly, the sequence is: node 13 -> 14 -> 9 -> 6 -> 5 -> 4 -> 8 -> 12 -> 13
+label"drivearound"
+	index = indexs[num]
+	% World coordinates
+	call"getposeInWorld"
+
+	% next stop point
+	ptx = ptxs[index]
+	pty = ptys[index]
+	
+	% Start planning
+	stringcat "findroute startx="xw "starty="yw "endx="ptx "endy="pty
+	laser "$string"
+	wait 1
+	N = $l4
+	cost = $l5
+	
+	label"drive2"
+
+		% Take coordinates
+		stringcat "getpoint p="N
+		laser "$string"
+		x = $l5
+		y = $l6
+		th = $l7
+
+		% Drive
+		drivew x y th "rad":($targetdist<0.25)
+		N = N - 1
+
+	if(N>=0)"drive2"
+	
+	stop
+	
+	call"getposeInWorld"
+	
+	% Calculate target pose
+	dx = xmid - xw
+	dy = ymid - yw
+	anglet = atan2(dy,dx)
+	anglet = normalizeanglerad(anglet)
+
+	% Turn towards center of area
+	angle = anglet - thw
+	angle = normalizeanglerad(angle)
+	ignoreobstacles
+	turn angle "rad"
+	
+	stop 
+
+	call"getposeInWorld"
+	
+	stringcat "zoneobst detect x= "$odox" y= "$odoy" th= "$odoth""
+	laser "$string"
+	wait 1
+
+	% Next point
+	num = num + 1
+if(num <=4)"drivearound"
+stop 
+wait 1
+
+laser "zoneobst savedata"
+wait 1
+
+laser "zoneobst determine"
+wait 1
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% Mission 3 %%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% Mission 3: back to origin and within an area.
+
+
+anglet = -3/4*pi
+
+call"getposeInWorld"
+
+stringcat "findroute startx="xw "starty="yw "endx="0.45 "endy="0.45
+laser "$string"
+wait 1
+N = $l4
+cost = $l5
+
+% Lable names must be distinctive.
+label"drive3"
+
+	% Take coordinates
+	stringcat "getpoint p="N
+	laser "$string"
+	x = $l5
+	y = $l6
+	th = $l7
+
+	% Drive
+	drivew x y th "rad":($targetdist<0.26)
+	N = N - 1
+
+if(N>=0)"drive3"
+
+wait 1
+
+call"getposeInWorld"
+
+angle = anglet - thw
+angle = normalizeanglerad(angle)
+
+ignoreobstacles
+turn angle "rad"
+
+ignoreobstacles
+fwd 0.3
+
+% Function definition
+label"getposeInWorld"
+	invtrans $l0 $l1 $l2 $odox $odoy $odoth
+	xw = $res0
+	yw = $res1
+	thw = $res2
+return
+
+
+
+
+
+
+
+
