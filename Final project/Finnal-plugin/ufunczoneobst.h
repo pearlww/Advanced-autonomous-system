@@ -19,13 +19,14 @@
  ***************************************************************************/
 #ifndef UFUNC_MRCOBST_H
 #define UFUNC_MRCOBST_H
-#define PI 3.1415926
+
 #include <cstdlib>
 #include <ulms4/ufunclaserbase.h>
 #include <urob4/uresposehist.h>
 #include<vector>
 #include<fstream>
 #include<iostream>
+
 using namespace std;
 ////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////
@@ -61,10 +62,7 @@ private:
 	vector<vector<double>> selectedPointsInWorld; 
 	// functions
 	void transform(vector<double>&);
-
 	void transform(const vector<double>&, double&, double&);
-
-	vector<double> lsqline(const vector<double>&, const vector<double>&);
 };
 
 #endif
