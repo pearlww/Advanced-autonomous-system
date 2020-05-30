@@ -18,7 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "ufunczoneobst.h"
-#include"object_on_loose"
+#include "object_detection.h"
+
 #ifdef LIBRARY_OPEN_NEEDED
 // This part defines the object necessary for plugin to work properly.
 UFunctionBase * createFunc()
@@ -203,6 +204,7 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
   }
 
   if(determineObject){
+
 	  vector<double> X;
 	  vector<double> Y;
 	  vector<vector<double>> Lines;
@@ -210,7 +212,11 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
 	  int RANSAC_ITR = 100;
 	  double THRESH = 0.02;
 
-	  for (int i = 0; i < selectedPointsInWorld.size(); i++) {
+	  ofstream out("detection_result.txt");
+	  streambuf *coutbuf = cout.rdbuf(); //save old buf
+	  cout.rdbuf(out.rdbuf()); //redirect cout to detection_result.txt
+
+	  for (int i = 0; i < selectedPointsInWorld.size(); i++){
 		  X.push_back(selectedPointsInWorld[i][0]);
 		  Y.push_back(selectedPointsInWorld[i][1]);
 	  }
@@ -218,6 +224,7 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
 	  Lines = od.ransac(X, Y, RANSAC_ITR, THRESH);
 	  od.objectPose(Lines);
   }
+
   return true;
 }
 
@@ -255,54 +262,3 @@ void UFunczoneobst::transform(const vector<double>& pose, double& x, double& y) 
 	y = y_tmp;
 }
 
-vector<double> UFunczoneobst::lsqline(const vector<double>& x, const vector<double>& y) {
-	/*
-	It will implement the lsq method described in exercises.
-	*/
-	int n = x.size();
-	double xmean, ymean, sumx, sumy, sumx2, sumy2, sumxy;
-
-	for (int j = 0; j < n; j++)
-	{
-		sumx += x[j];
-		sumy += y[j];
-	}
-
-	xmean = sumx / (double)n;
-	ymean = sumy / (double)n;
-
-	sumx2 = 0;
-	sumy2 = 0;
-	sumxy = 0;
-	for (int i = 0; i < n; i++)
-	{
-		sumx2 += x[i] * x[i];
-		sumy2 += y[i] * y[i];
-		sumxy += x[i] * y[i];
-	}
-
-	double a = 0.5 * atan2((2 * sumx * sumy - 2 * (double)n * sumxy), pow(sumx, 2) - pow(sumy, 2) - (double)n * sumx2 + (double)n * sumy2);
-	double r = xmean * cos(a) + ymean * sin(a);
-
-	if (r < 0)
-	{
-		r = abs(r);
-		if (a < 0)
-		{
-			a += PI;
-		}
-		else
-		{
-			a -= PI;
-		}
-	}
-
-	// make sure we are in ]-pi;pi]
-	a = atan2(sin(a), cos(a));
-
-	vector<double> line;
-	line.push_back(a);
-	line.push_back(r);
-
-	return line;
-}
