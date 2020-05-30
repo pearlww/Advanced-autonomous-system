@@ -1,1 +1,6 @@
-~
+This folder contains .cpp and .h files necessary for solving the final problem.
+The way to use it is to put it under the folder of:
+home/smr/mobotware/aurs-plugins/myplugin/.
+
+Clearly, folder myplugin/ should be defined by yourself.
+For this, you need to follow the steps described in dtu learn announcement.
