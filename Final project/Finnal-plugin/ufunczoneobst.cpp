@@ -389,7 +389,7 @@ float thresh --> the thresh distance of define a inlier
 int m --> the possible number of outliers, defult value is 0.
 **return:	vector<vector<double>> Lines --> all extracted lines
 */
-vector<vector<double>> ObjectDetection::ransac(vector<double> X, vector<double> Y, int itr, float thresh, int m=0) {
+vector<vector<double>> ObjectDetection::ransac(vector<double> X, vector<double> Y, int itr, float thresh, int m) {
 
 	cout << "--------------------------- extract lines now ---------------------------------" << endl;
 	cout << " Lines are expressed as (ax + by + c = 0)" << endl;
@@ -397,7 +397,7 @@ vector<vector<double>> ObjectDetection::ransac(vector<double> X, vector<double> 
 	vector<double> remain_Y = Y;
 	vector<vector<double>> Lines;
 
-	while (remain_X.size() <= m) {
+	while (remain_X.size() > m) {
 		vector<double> X_inliers;
 		vector<double> Y_inliers;
 		int maxNoOfInlier = 0;
@@ -580,7 +580,7 @@ vector<double> ObjectDetection::objectPose(vector<vector<double>> Lines) {
 		Points.push_back(getIntersectedPoint(Lines[1], Lines[2]));
 
 		cout << " The vertices of the shape are:" << endl;
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < Points.size(); i++) {
 			cout << "point" << i + 1 << ": (" << Points[i][0] << ", " << Points[i][1] << ")" << endl;
 		}
 
@@ -601,15 +601,15 @@ vector<double> ObjectDetection::objectPose(vector<vector<double>> Lines) {
 		sort(threeSides.begin(), threeSides.end(), mySort);
 
 		cout << " The side lengths of the shape are:" << endl;
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < threeSides.size(); i++) {
 			cout << "side" << i + 1 << ": " << threeSides[i].length << endl;
 		}
 
 		// judge the shape of object
-		if (threeSides[0].length > 0.09 && threeSides[0].length < 0.11) {
+		if (threeSides[1].length > 0.37 && threeSides[1].length < 0.43) {
 			cout << "The object is object 3" << endl;
 		}
-		else if (threeSides[0].length > 0.14 && threeSides[0].length < 0.16) {
+		else if (threeSides[1].length > 0.27 && threeSides[1].length < 0.33) {
 			cout << "The object is object 4" << endl;
 		}
 		else {
@@ -697,10 +697,10 @@ vector<double> ObjectDetection::objectPose(vector<vector<double>> Lines) {
 		}
 
 		// judge the shape of object
-		if (FourSides[3].length > 0.39 && FourSides[3].length < 0.41) {
+		if (FourSides[3].length > 0.37 && FourSides[3].length < 0.43) {
 			cout << "The object is object 1" << endl;
 		}
-		else if (FourSides[3].length > 0.29 && FourSides[3].length < 0.31) {
+		else if (FourSides[3].length > 0.27 && FourSides[3].length < 0.33) {
 			cout << "The object is object 2" << endl;
 		}
 		else {
@@ -713,8 +713,8 @@ vector<double> ObjectDetection::objectPose(vector<vector<double>> Lines) {
 
 		vector<double> pointO = getIntersectedPoint(l1, l2);
 		// get the oritation (the angle of the long side)
-		double y = FourSides[3].p1[1] - FourSides[3].p2[1];
-		double x = FourSides[3].p1[0] - FourSides[3].p2[0];
+		double y = FourSides[3].p2[1] - FourSides[3].p1[1];
+		double x = FourSides[3].p2[0] - FourSides[3].p1[0];
 		double theta = atan2(y, x) * 180 / PI;
 		pose[0] = pointO[0];
 		pose[1] = pointO[1];
