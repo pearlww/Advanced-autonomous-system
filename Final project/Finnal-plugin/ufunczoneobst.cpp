@@ -210,6 +210,7 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
 	  ObjectDetection od;
 	  int RANSAC_ITR = 100;
 	  double THRESH = 0.02;
+	  int M = 0;
 
 	  ofstream out("detection_result.txt");
 	  streambuf *coutbuf = cout.rdbuf(); //save old buf
@@ -220,7 +221,7 @@ bool UFunczoneobst::handleCommand(UServerInMsg * msg, void * extra)
 		  Y.push_back(selectedPointsInWorld[i][1]);
 	  }
 
-	  Lines = od.ransac(X, Y, RANSAC_ITR, THRESH);
+	  Lines = od.ransac(X, Y, RANSAC_ITR, THRESH, M);
 	  od.objectPose(Lines);
   }
 
@@ -262,14 +263,12 @@ void UFunczoneobst::transform(const vector<double>& pose, double& x, double& y) 
 }
 
 
-vector<double> ObjectDetection::transform(vector<double> poseW, vector<double> cart) {
-	vector<double> cart_trans(2);
-	double theta = poseW[2];
 
-	cart_trans[0] = cos(theta)*cart[0] + sin(theta)*cart[1] + poseW[0];
-	cart_trans[1] = -sin(theta)*cart[0] + cos(theta)*cart[1] + poseW[1];
-	return cart_trans;
-}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////  FUNCTIONS OF OBJECT DETECTION CLASS /////////////////////////////////////////
+
 
 /* function name: getLine
 ** parameters:
@@ -382,7 +381,15 @@ vector<double> ObjectDetection::lsqLine(vector<double> X, vector<double> Y) {
 	return lsqLine;
 }
 
-vector<vector<double>> ObjectDetection::ransac(vector<double> X, vector<double> Y, int itr, float thresh) {
+/* function name: ransac
+** parameters:  vector<double> X -->  x-coordinate set of all points
+vector<double> Y --> y-coordinate set of all points
+int itr --> the number of resampleing iterations
+float thresh --> the thresh distance of define a inlier
+int m --> the possible number of outliers, defult value is 0.
+**return:	vector<vector<double>> Lines --> all extracted lines
+*/
+vector<vector<double>> ObjectDetection::ransac(vector<double> X, vector<double> Y, int itr, float thresh, int m=0) {
 
 	cout << "--------------------------- extract lines now ---------------------------------" << endl;
 	cout << " Lines are expressed as (ax + by + c = 0)" << endl;
@@ -390,7 +397,7 @@ vector<vector<double>> ObjectDetection::ransac(vector<double> X, vector<double> 
 	vector<double> remain_Y = Y;
 	vector<vector<double>> Lines;
 
-	while (remain_X.size() != 0) {
+	while (remain_X.size() <= m) {
 		vector<double> X_inliers;
 		vector<double> Y_inliers;
 		int maxNoOfInlier = 0;
@@ -455,6 +462,11 @@ vector<vector<double>> ObjectDetection::ransac(vector<double> X, vector<double> 
 	return Lines;
 }
 
+/* function name: checkParallel
+** parameters:  vector<double> line1 --> the first line,
+vector<double> line2 --> the other line,
+**return:	double parallelFlag --> when 2 lines are parallel, return true.
+*/
 bool ObjectDetection::checkParallel(vector<double> line1, vector<double> line2) {
 	double a1 = line1[0];
 	double b1 = line1[1];
@@ -489,6 +501,11 @@ bool ObjectDetection::checkParallel(vector<double> line1, vector<double> line2) 
 	}
 }
 
+/* function name: getIntersectedPoint
+** parameters:  vector<double> line1 --> the first line,
+vector<double> line2 --> the other line,
+**return:	vector<double> point --> the intersecter point of the two line
+*/
 vector<double> ObjectDetection::getIntersectedPoint(vector<double> line1, vector<double> line2) {
 	vector<double> point(2, 9999);
 	double a1 = line1[0];
@@ -523,6 +540,11 @@ vector<double> ObjectDetection::getIntersectedPoint(vector<double> line1, vector
 	}
 }
 
+/* function name: getPointsDis
+** parameters:  vector<double> point1 --> the first point,
+vector<double> point2 --> the other point,
+**return:	double dis --> the distance between 2 points
+*/
 double ObjectDetection::getPointsDis(vector<double> point1, vector<double> point2) {
 	double x1 = point1[0];
 	double y1 = point1[1];
@@ -533,14 +555,20 @@ double ObjectDetection::getPointsDis(vector<double> point1, vector<double> point
 	return dis;
 }
 
+// a lambda function used in sort algorithm
 bool mySort(side s1, side s2) {
 	return s1.length < s2.length;
 }
 
-void ObjectDetection::objectPose(vector<vector<double>> Lines) {
+
+/* function name: objectPose
+** parameters:  vector<vector<double>> Lines --> a lines set which include 3 or 4 lines,
+** return:	vector<double> pose --> the pose[0] is the x-coordinary, the pose[1] is the y-coordinary, the pose[2] is the theta.
+*/
+vector<double> ObjectDetection::objectPose(vector<vector<double>> Lines) {
 
 	cout << "--------------------------- estimate object pose now ---------------------------------" << endl;
-	vector<double> pose(3, 0);
+	vector<double> pose(3, 9999);
 	string object;
 
 	if (Lines.size() == 3) {
@@ -698,6 +726,6 @@ void ObjectDetection::objectPose(vector<vector<double>> Lines) {
 	else {
 		cout << "Not triangle or rectangle !" << endl;
 	}
-
+	return pose;
 }
 
