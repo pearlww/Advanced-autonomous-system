@@ -1,5 +1,17 @@
 #!/usr/bin/python3
-
+'''
+Author:			Jeremy Coffelt
+Date:			Spring 2020
+Course:			31388 - Advanced Autonomous Systems
+Group:			Number 17
+Groupmates:		P. Christensen, P. Wang, Z. Lei, and N. Schieber
+Filename:		randoFakeObjectPoints.py
+Purpose:		Generats "fake" noisy sensor data for testing percep algos
+Dependencies:	auxObjectWalls.txt, which contains (only) the walls of OOTL
+Outputs:		testObjectXcoords.txt, only the generated x-coordinates
+				testObjectYcoords.txt, only the generated y-coordinates
+				testObjectXYcoords.txt, both the x- and y-coordinates
+'''
 import os
 import math
 from random import random

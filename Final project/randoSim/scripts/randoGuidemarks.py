@@ -1,5 +1,16 @@
 #!/usr/bin/python3
-
+'''
+Author:			Jeremy Coffelt
+Date:			Spring 2020
+Course:			31388 - Advanced Autonomous Systems
+Group:			Number 17
+Groupmates:		P. Christensen, P. Wang, Z. Lei, and N. Schieber
+Filename:		randoGuidemarks.py
+Purpose:		Randomly selects and orders guidemarks
+Dependencies:	auxSimplifiedGuidemarks.txt, which contains constant info on gmks
+Outputs:		randoGuidemarks.txt, which contains the randomized guidemarks
+				simSummaryGuidemarks.txt, which summarizes the guidemark tour
+'''
 import os
 from random import randint
 from random import shuffle

@@ -1,5 +1,16 @@
 #!/usr/bin/python3
-
+'''
+Author:			Jeremy Coffelt
+Date:			Spring 2020
+Course:			31388 - Advanced Autonomous Systems
+Group:			Number 17
+Groupmates:		P. Christensen, P. Wang, Z. Lei, and N. Schieber
+Filename:		randoSMRCLScript.py
+Purpose:		Updates SMR-CL script to start at first guidemark of tour
+Dependencies:	constSMRCL.txt, which contains the constant part of SMR-CL script
+				simSummaryGuidemarks.txt, which summarizes the guidemark tour
+Outputs:		randoGuidemarks.txt, which contains the randomized SMR-CL script
+'''
 import os
 
 filename = "simSummaryGuidemarks.txt"
