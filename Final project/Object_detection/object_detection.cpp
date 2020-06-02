@@ -1,15 +1,6 @@
 #include "object_detection.h"
 
 
-vector<double> ObjectDetection::transform(vector<double> poseW, vector<double> cart){
-	vector<double> cart_trans(2);
-	double theta = poseW[2];
-
-	cart_trans[0] = cos(theta)*cart[0] + sin(theta)*cart[1] + poseW[0];
-	cart_trans[1] = -sin(theta)*cart[0] + cos(theta)*cart[1] + poseW[1];
-	return cart_trans;
-}
-
 /* function name: getLine
 ** parameters:
 double x1 --> point1's x-coordinate,
@@ -100,17 +91,17 @@ vector<double> ObjectDetection::lsqLine(vector<double> X, vector<double> Y) {
 		varY += (Y[i] - meanY) * (Y[i] - meanY);
 	}
 
-	if (varX<0.00001){ //the line is parallel to y axis
+	if (varX < 0.00001) { //the line is parallel to y axis
 		lsqLine[0] = -1;
 		lsqLine[1] = 0;
 		lsqLine[2] = meanX;
 	}
-	else if (varY<0.00001){//the line is parallel to x axis
+	else if (varY < 0.00001) {//the line is parallel to x axis
 		lsqLine[0] = 0;
 		lsqLine[1] = -1;
 		lsqLine[2] = meanY;
 	}
-	else{
+	else {
 		b = covXY / varX;
 		a = meanY - b * meanX;
 		//a = y_ - bx_ --> bx - y + a = 0
@@ -121,7 +112,15 @@ vector<double> ObjectDetection::lsqLine(vector<double> X, vector<double> Y) {
 	return lsqLine;
 }
 
-vector<vector<double>> ObjectDetection::ransac(vector<double> X, vector<double> Y, int itr, float thresh){
+/* function name: ransac
+** parameters:  vector<double> X -->  x-coordinate set of all points
+vector<double> Y --> y-coordinate set of all points
+int itr --> the number of resampleing iterations
+float thresh --> the thresh distance of define a inlier
+int m --> the possible number of outliers, defult value is 0.
+**return:	vector<vector<double>> Lines --> all extracted lines
+*/
+vector<vector<double>> ObjectDetection::ransac(vector<double> X, vector<double> Y, int itr, float thresh, int m) {
 
 	cout << "--------------------------- extract lines now ---------------------------------" << endl;
 	cout << " Lines are expressed as (ax + by + c = 0)" << endl;
@@ -129,17 +128,17 @@ vector<vector<double>> ObjectDetection::ransac(vector<double> X, vector<double> 
 	vector<double> remain_Y = Y;
 	vector<vector<double>> Lines;
 
-	while (remain_X.size() != 0){
+	while (remain_X.size() > m) {
 		vector<double> X_inliers;
 		vector<double> Y_inliers;
 		int maxNoOfInlier = 0;
 		vector<double> line;
 
-		
-		for (int i = 0; i < itr; i++){
+
+		for (int i = 0; i < itr; i++) {
 			// select two random numbers to fit a line
-			int n1=-1, n2=-1;
-			while (n1==n2){
+			int n1 = -1, n2 = -1;
+			while (n1 == n2) {
 				n1 = rand() % remain_X.size();
 				n2 = rand() % remain_X.size();
 			}
@@ -153,15 +152,15 @@ vector<vector<double>> ObjectDetection::ransac(vector<double> X, vector<double> 
 			int noOfInlier = 0;
 			vector<double> XX;
 			vector<double> YY;
-			for (int i = 0; i < remain_X.size(); i++){
+			for (int i = 0; i < remain_X.size(); i++) {
 				double dis = pointLineDis(remain_X[i], remain_Y[i], line);
-				if (dis < thresh){
+				if (dis < thresh) {
 					XX.push_back(remain_X[i]);
 					YY.push_back(remain_Y[i]);
 					noOfInlier++;
 				}
 			}
-			if (noOfInlier > maxNoOfInlier){
+			if (noOfInlier > maxNoOfInlier) {
 				maxNoOfInlier = noOfInlier;
 				X_inliers = XX;
 				Y_inliers = YY;
@@ -179,22 +178,27 @@ vector<vector<double>> ObjectDetection::ransac(vector<double> X, vector<double> 
 		cout << "Line: (" << line[0] << ", " << line[1] << ", " << line[2] << ")" << endl;
 
 		// delete inliers for next detection
-		for (int i = 0; i <X_inliers.size(); i++){
-			for (int j = 0; j < remain_X.size(); j++){
-				if (X_inliers[i] == remain_X[j] && Y_inliers[i] == remain_Y[j]){
+		for (int i = 0; i < X_inliers.size(); i++) {
+			for (int j = 0; j < remain_X.size(); j++) {
+				if (X_inliers[i] == remain_X[j] && Y_inliers[i] == remain_Y[j]) {
 					remain_X.erase(remain_X.begin() + j);
 					remain_Y.erase(remain_Y.begin() + j);
 					break;
 				}
 			}
 		}
-		
+
 	}
-	cout << Lines.size() <<" "<< "lines are detected !" << endl;
+	cout << Lines.size() << " " << "lines are detected !" << endl;
 	return Lines;
 }
 
-bool ObjectDetection::checkParallel(vector<double> line1, vector<double> line2){
+/* function name: checkParallel
+** parameters:  vector<double> line1 --> the first line,
+vector<double> line2 --> the other line,
+**return:	double parallelFlag --> when 2 lines are parallel, return true.
+*/
+bool ObjectDetection::checkParallel(vector<double> line1, vector<double> line2) {
 	double a1 = line1[0];
 	double b1 = line1[1];
 	double c1 = line1[2];
@@ -212,21 +216,27 @@ bool ObjectDetection::checkParallel(vector<double> line1, vector<double> line2){
 			return false;
 	}
 	// if both b are 0, they are parallel
-	else if (b1==0 && b2==0 ) {
+	else if (b1 == 0 && b2 == 0) {
 		return true;
 	}
 	// if only one b is 0, check another line's slope
-	else{
-		if (b1 == 0){
+	else {
+		if (b1 == 0) {
 			if (fabs(a2 / b2) > 1000) return true;
 			else return false;
 		}
-		else if (b2 == 0){
+		else if (b2 == 0) {
 			if (fabs(a1 / b1) > 1000) return true;
 			else return false;
 		}
 	}
 }
+
+/* function name: getIntersectedPoint
+** parameters:  vector<double> line1 --> the first line,
+vector<double> line2 --> the other line,
+**return:	vector<double> point --> the intersecter point of the two line
+*/
 vector<double> ObjectDetection::getIntersectedPoint(vector<double> line1, vector<double> line2) {
 	vector<double> point(2, 9999);
 	double a1 = line1[0];
@@ -238,11 +248,11 @@ vector<double> ObjectDetection::getIntersectedPoint(vector<double> line1, vector
 
 	double x;
 	double y;
-	if (checkParallel(line1, line2)){
+	if (checkParallel(line1, line2)) {
 		cout << "two lines parallel, no intersected point!" << endl;
 		return point;
 	}
-	else{
+	else {
 		if (a1 == 0) {
 			y = -c1 / b1;
 			x = -b2 * y / a2 - c2 / a2;
@@ -251,7 +261,7 @@ vector<double> ObjectDetection::getIntersectedPoint(vector<double> line1, vector
 			y = -c2 / b2;
 			x = -b1 * y / a1 - c1 / a1;
 		}
-		else{
+		else {
 			y = (a1 * c2 - a2 * c1) / (a2 * b1 - a1 * b2);
 			x = -b1 * y / a1 - c1 / a1;
 		}
@@ -260,6 +270,12 @@ vector<double> ObjectDetection::getIntersectedPoint(vector<double> line1, vector
 		return point;
 	}
 }
+
+/* function name: getPointsDis
+** parameters:  vector<double> point1 --> the first point,
+vector<double> point2 --> the other point,
+**return:	double dis --> the distance between 2 points
+*/
 double ObjectDetection::getPointsDis(vector<double> point1, vector<double> point2) {
 	double x1 = point1[0];
 	double y1 = point1[1];
@@ -270,18 +286,23 @@ double ObjectDetection::getPointsDis(vector<double> point1, vector<double> point
 	return dis;
 }
 
-
-bool mySort(side s1, side s2){
+// a lambda function used in sort algorithm
+bool mySort(side s1, side s2) {
 	return s1.length < s2.length;
 }
 
-void ObjectDetection::objectPose(vector<vector<double>> Lines){
+
+/* function name: objectPose
+** parameters:  vector<vector<double>> Lines --> a lines set which include 3 or 4 lines,
+** return:	vector<double> pose --> the pose[0] is the x-coordinary, the pose[1] is the y-coordinary, the pose[2] is the theta.
+*/
+vector<double> ObjectDetection::objectPose(vector<vector<double>> Lines) {
 
 	cout << "--------------------------- estimate object pose now ---------------------------------" << endl;
-	vector<double> pose(3, 0);
+	vector<double> pose(3, 9999);
 	string object;
 
-	if (Lines.size() == 3){
+	if (Lines.size() == 3) {
 
 		vector<vector<double>> Points;
 
@@ -290,8 +311,8 @@ void ObjectDetection::objectPose(vector<vector<double>> Lines){
 		Points.push_back(getIntersectedPoint(Lines[1], Lines[2]));
 
 		cout << " The vertices of the shape are:" << endl;
-		for (int i = 0; i < 3; i++){
-			cout << "point" << i+1 << ": (" << Points[i][0] << ", " << Points[i][1] <<")" << endl;
+		for (int i = 0; i < Points.size(); i++) {
+			cout << "point" << i + 1 << ": (" << Points[i][0] << ", " << Points[i][1] << ")" << endl;
 		}
 
 		side side1, side2, side3;
@@ -311,18 +332,18 @@ void ObjectDetection::objectPose(vector<vector<double>> Lines){
 		sort(threeSides.begin(), threeSides.end(), mySort);
 
 		cout << " The side lengths of the shape are:" << endl;
-		for (int i = 0; i < 3; i++){
-			cout << "side" << i+1 << ": " << threeSides[i].length << endl;
+		for (int i = 0; i < threeSides.size(); i++) {
+			cout << "side" << i + 1 << ": " << threeSides[i].length << endl;
 		}
 
 		// judge the shape of object
-		if (threeSides[0].length>0.09 && threeSides[0].length<0.11){
+		if (threeSides[1].length > 0.37 && threeSides[1].length < 0.43) {
 			cout << "The object is object 3" << endl;
 		}
-		else if (threeSides[0].length>0.14 && threeSides[0].length<0.16){
+		else if (threeSides[1].length > 0.27 && threeSides[1].length < 0.33) {
 			cout << "The object is object 4" << endl;
 		}
-		else{
+		else {
 			cout << "It is a triangle but not object 3 or 4" << endl;
 		}
 
@@ -336,26 +357,26 @@ void ObjectDetection::objectPose(vector<vector<double>> Lines){
 		pose[0] = pointO[0];
 		pose[1] = pointO[1];
 		pose[2] = theta;
-		cout << "The pose(x, y, theta) of the object is:"<< endl;
-		cout << "(" << pose[0] << ", " << pose[1] << ", " << pose[2] <<")" << endl;
+		cout << "The pose(x, y, theta) of the object is:" << endl;
+		cout << "(" << pose[0] << ", " << pose[1] << ", " << pose[2] << ")" << endl;
 	}
-	else if (Lines.size() == 4){
+	else if (Lines.size() == 4) {
 		vector<vector<double>> parallelPair1;
 		vector<vector<double>> parallelPair2;
 
-		if (checkParallel(Lines[0], Lines[1])){
+		if (checkParallel(Lines[0], Lines[1])) {
 			parallelPair1.push_back(Lines[0]);
 			parallelPair1.push_back(Lines[1]);
 			parallelPair2.push_back(Lines[2]);
 			parallelPair2.push_back(Lines[3]);
 		}
-		else if (checkParallel(Lines[0], Lines[2])){
+		else if (checkParallel(Lines[0], Lines[2])) {
 			parallelPair1.push_back(Lines[0]);
 			parallelPair1.push_back(Lines[2]);
 			parallelPair2.push_back(Lines[1]);
 			parallelPair2.push_back(Lines[3]);
 		}
-		else if (checkParallel(Lines[0], Lines[3])){
+		else if (checkParallel(Lines[0], Lines[3])) {
 			parallelPair1.push_back(Lines[0]);
 			parallelPair1.push_back(Lines[3]);
 			parallelPair2.push_back(Lines[1]);
@@ -369,7 +390,7 @@ void ObjectDetection::objectPose(vector<vector<double>> Lines){
 		Points.push_back(getIntersectedPoint(parallelPair1[1], parallelPair2[1]));
 
 		cout << " The vertices of the shape are:" << endl;
-		for (int i = 0; i < Points.size(); i++){
+		for (int i = 0; i < Points.size(); i++) {
 			cout << "point" << i + 1 << ": (" << Points[i][0] << ", " << Points[i][1] << ")" << endl;
 		}
 
@@ -402,18 +423,18 @@ void ObjectDetection::objectPose(vector<vector<double>> Lines){
 		sort(FourSides.begin(), FourSides.end(), mySort);
 
 		cout << " The side lengths of the shape are:" << endl;
-		for (int i = 0; i < FourSides.size(); i++){
+		for (int i = 0; i < FourSides.size(); i++) {
 			cout << "side" << i + 1 << ": " << FourSides[i].length << endl;
 		}
 
 		// judge the shape of object
-		if (FourSides[3].length>0.39 && FourSides[3].length<0.41){
+		if (FourSides[3].length > 0.37 && FourSides[3].length < 0.43) {
 			cout << "The object is object 1" << endl;
 		}
-		else if (FourSides[3].length>0.29 && FourSides[3].length<0.31){
+		else if (FourSides[3].length > 0.27 && FourSides[3].length < 0.33) {
 			cout << "The object is object 2" << endl;
 		}
-		else{
+		else {
 			cout << "It is a rectangle but not object 1 or 2" << endl;
 		}
 
@@ -423,8 +444,8 @@ void ObjectDetection::objectPose(vector<vector<double>> Lines){
 
 		vector<double> pointO = getIntersectedPoint(l1, l2);
 		// get the oritation (the angle of the long side)
-		double y = FourSides[3].p1[1] - FourSides[3].p2[1];
-		double x = FourSides[3].p1[0] - FourSides[3].p2[0];
+		double y = FourSides[3].p2[1] - FourSides[3].p1[1];
+		double x = FourSides[3].p2[0] - FourSides[3].p1[0];
 		double theta = atan2(y, x) * 180 / PI;
 		pose[0] = pointO[0];
 		pose[1] = pointO[1];
@@ -432,11 +453,11 @@ void ObjectDetection::objectPose(vector<vector<double>> Lines){
 		cout << "The pose(x, y, theta) of the object is:" << endl;
 		cout << "(" << pose[0] << ", " << pose[1] << ", " << pose[2] << ")" << endl;
 	}
-	
-	else{
+
+	else {
 		cout << "Not triangle or rectangle !" << endl;
 	}
-
+	return pose;
 }
 
 

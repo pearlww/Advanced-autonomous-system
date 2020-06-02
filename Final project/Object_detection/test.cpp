@@ -7,6 +7,11 @@ int main(void){
 	vector<double> Y;
 	vector<vector<double>> Lines;
 	ObjectDetection od;
+
+	//ofstream out("detection_result.txt");
+	//streambuf *coutbuf = cout.rdbuf(); //save old buf
+	//cout.rdbuf(out.rdbuf()); //redirect cout to detection_result.txt
+
 	/*----------------------------- test1 --------------------------------------*/
 	//for (int i = 0; i <= 6; i++){
 	//	X.push_back(10);
@@ -40,7 +45,7 @@ int main(void){
 	//}
 
 	/*----------------------------------- test3-------------------------------------------*/
-	ifstream myfile("laserData2.txt");
+	ifstream myfile("laserData_rect.txt");
 	double x;
 	double y;
 	while ( myfile >> x >> y) {
@@ -48,12 +53,8 @@ int main(void){
 		Y.push_back(y);
 	}
 
-	for (int i = 0; i < X.size(); i++){
-		cout << X[i] << " " << Y[i] << endl;
-	}
-
 	/*--------------------------------------------------------------------------*/
-	Lines = od.ransac(X, Y, 100, 0.02);
+	Lines = od.ransac(X, Y, 100, 0.02 );
 	od.objectPose(Lines);
 
 	system("pause");
