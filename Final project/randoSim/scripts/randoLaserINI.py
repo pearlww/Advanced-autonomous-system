@@ -1,5 +1,18 @@
 #!/usr/bin/python3
 
+'''
+Author:			Jeremy Coffelt
+Date:			Spring 2020
+Course:			31388 - Advanced Autonomous Systems
+Group:			Number 17
+Groupmates:		P. Christensen, P. Wang, Z. Lei, and N. Schieber
+Filename:		randoLaserINI.py
+Purpose:		Updates the ulmsserver.ini file with new OOTL walls
+Dependencies:	auxObjectWalls.txt, which contains (only) the walls of OOTL
+				constLaserINI.txt, which is the template file to be updated
+Outputs:		randoLaserINI.txt, which will ultimately be copied and
+					renamed as ulmsserver.ini
+'''
 import os
 
 filename = "auxObjectWalls.txt"

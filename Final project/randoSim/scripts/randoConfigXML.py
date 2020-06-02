@@ -1,5 +1,16 @@
 #!/usr/bin/python3
-
+'''
+Author:			Jeremy Coffelt
+Date:			Spring 2020
+Course:			31388 - Advanced Autonomous Systems
+Group:			Number 17
+Groupmates:		P. Christensen, P. Wang, Z. Lei, and N. Schieber
+Filename:		randoConfigXML.py
+Purpose:		Updates config.xml file with randomized guidemark tour
+Dependencies:	constConfig.xml, which contains the constant part of config.xml
+				randoGuidemarks.txt, which summarizes the randomized guidemark tour
+Outputs:		randoConfig.xml, which contains the randomized config.xml file
+'''
 import os
 
 filename = "randoGuidemarks.txt"

@@ -1,5 +1,18 @@
 #!/usr/bin/python3
-
+'''
+Author:			Jeremy Coffelt
+Date:			Spring 2020
+Course:			31388 - Advanced Autonomous Systems
+Group:			Number 17
+Groupmates:		P. Christensen, P. Wang, Z. Lei, and N. Schieber
+Filename:		randoObject.py
+Purpose:		Randomly selects, locates, and orients an "object on loose"
+Dependencies:	constWalls.txt, which contains fixed map walls
+Outputs:		auxObjectWalls.txt, which contains only OOTL walls
+				randoWalls.txt, which adds OOTL walls to fixed map walls
+				simSummaryObject.txt, which summarizes ID, location, and
+						orientation of the OOTL
+'''
 import os
 import math
 from random import random
@@ -86,7 +99,6 @@ while (not obj_fits):
 summary_text = "Type: " + obj_type + '\n'
 summary_text += "ID:   " + str(obj_num) + '\n'
 summary_text += "Pose: (" + str(x0) + ', ' + str(y0) + ', ' + str(q0) + ')'
-
 
 filename = "simSummaryObject.txt"
 path = "../simSummary/"
